@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ラブライブ！スクフェス カード一覧</title>
+    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript"
+            src="https://cdn.rawgit.com/jabney/d9d5c13ad7f871ddf03f/raw/99b13e7721f8a50ef8b0c1e9c015eca9fb6e9e8f/setOps.js"></script>
+    <script type="text/javascript" src="cards.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h3>ラブライブ！スクフェス　カード一覧</h3>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" href="#collapse1">使用說明</a>
+                </h4>
+            </div>
+            <div id="collapse1" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <ul>
+                        <li>將ラブライブ！スクフェス的卡片資料列成表格，並提供排序、篩選等功能</li>
+                        <li>我沒有拆包的技能，資料會不定期由小守護進程(?)向日文wiki相關頁面同步。</li>
+                        <li><s>寫得很隨興，而且是拿來練習寫JavaScript的網頁，所以網頁跑起來很慢，而且目前已經知道亂戳一陣後一定會出Bug。</s></li>
+                        <li>排序功能</li>
+                        <ul>
+                            <li>點選排序項目的名稱即會以該欄排序，遇到相同值時以卡片號碼小的排在前面。</li>
+                            <li>技能相關項目都互相以數字直接比較，發動條件數字小的列在前面，機率、效果則是先列數字大的卡片。</li>
+                            <li>因為數值最差的卡片可以從表格底端倒回來找，所以就沒去寫相反排列順序了。</li>
+                        </ul>
+                        <li>篩選功能</li>
+                        <ul>
+                            <li>可選擇要顯示的卡片的條件，目前包含稀有度、成員名稱、所屬團體、卡片屬性、卡片技能、卡片標記。</li>
+                            <li>選取該項時文字為藍色連結，不選取時文字為黑色並有刪除線。</li>
+                            <li>該欄位為全選時按鈕為藍色，部分顯示時為橘色，全部不選時為灰色。</li>
+                            <li>因為預設是選取全部，只想要看特定項目，先點清除再點它會比較快。</li>
+                        </ul>
+                        <li>卡片標記</li>
+                        <ul>
+                            <li>卡片標記可拿來做為篩選顯示的條件。</li>
+                            <li>標記的方式是點擊卡片的<strong>「技能名稱」</strong>欄。</li>
+                            <li>可以同時標記、反標記、清除卡片，注意只會針對目前顯示的卡片操作。</li>
+                        </ul>
+                        <li>載入圖片</li>
+                        <ul>
+                            <li>預設不會讀取圖片，需要時點載入按鈕就會顯示出來。</li>
+                            <li>原本是只打算在手機上這麼做就是了。</li>
+                        </ul>
+                        <li>之後才會加的東西</li>
+                        <ul>
+                            <li>保存已標記的卡片資訊在Cookie中</li>
+                            <li>輸出有已標記卡片資訊的網址</li>
+                        </ul>
+                        <li>資料來源：<a href="http://www59.atwiki.jp/lovelive-sif/" target="_blank">ラブライブ！スクフェス 情報まとめwiki</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="main-body">
+            <p>資料更新時間：<span id="span-update"></span></p>
+            <div class="dropdown div-inline">
+                <button class="btn btn-info dropdown-toggle btn-rar" type="button" data-toggle="dropdown">
+                    <span id="span-rare" type="all">顯示稀有度</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu keep-open-on-click" role="menu" id="dropdown-rar">
+                </ul>
+            </div>
+            <div class="dropdown div-inline">
+                <button class="btn btn-info dropdown-toggle btn-grp" type="button" data-toggle="dropdown">
+                    <span id="span-group" type="all">顯示團體</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu keep-open-on-click" id="dropdown-grp">
+                </ul>
+            </div>
+            <div class="dropdown div-inline">
+                <button class="btn btn-info dropdown-toggle btn-mem" type="button" data-toggle="dropdown">
+                    <span id="span-member" type="all">顯示成員</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu keep-open-on-click" id="dropdown-mem">
+                </ul>
+            </div>
+            <div class="dropdown div-inline">
+                <button class="btn btn-info dropdown-toggle btn-typ" type="button" data-toggle="dropdown">
+                    <span id="span-type" type="all">顯示屬性</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu keep-open-on-click" id="dropdown-typ">
+                </ul>
+            </div>
+            <div class="dropdown div-inline">
+                <button class="btn btn-info dropdown-toggle btn-skt" type="button" data-toggle="dropdown">
+                    <span id="span-skill" type="all">顯示技能</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu keep-open-on-click" id="dropdown-skt">
+                </ul>
+            </div>
+            
+            <div class="dropdown div-inline">
+                <button class="btn btn-secondary dropdown-toggle btn-mrk" type="button" data-toggle="dropdown">
+                    <span id="span-skill" type="all">標記</span> <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu keep-open-on-click" id="dropdown-mrk">
+                    <li><button type="button" 
+                                class="btn btn-link btn-block mrk-args"
+                                args="add-page">標記所有顯示中卡片</button></li>
+                    <li><button type="button" 
+                                class="btn btn-link btn-block mrk-args"
+                                args="clr-page">取消所有顯示中卡片</button></li>
+                    <li><button type="button" 
+                                class="btn btn-link btn-block mrk-args"
+                                args="toggle-page">反向選擇顯示中卡片</button></li>
+                    <li><span style="padding: 3px 20px">--</span></li>
+                    <li><button type="button"
+                                class="btn btn-link btn-block btn-filter filter-all filter-mrk filter-disable"
+                                op="toggle"
+                                attr="mrk">只顯示標記中的卡片</button></li>
+                </ul>
+            </div>
+            
+            <button id="btn-all" type="button" class="btn btn-primary btn-unavilable">標記全部卡片</button>
+            <button id="btn-clr" type="button" class="btn btn-primary btn-unavilable">清除標記卡片</button>
+            <button id="btn-mark" type="button" class="btn btn-primary btn-unavilable">只顯示標記卡片</button>
+            <button id="btn-loadimg" type="button" class="btn btn-warning">載入圖片</button>
+            <div class="table-responsive">
+                <table class="table table-striped" id="table-cards">
+                    <thead>
+                        <tr>
+                            <th rowspan="2"></th>
+                            <th rowspan="2" class="th-sort" id="th-cno"><span>No.</span></th>
+                            <th rowspan="2" class="th-sort" id="th-mem"><span>名前</span></th>
+                            <th rowspan="2">スキル</th>
+                            <th rowspan="2" class="th-sort" id="th-rar"><span>レアリティ</span></th>
+                            <th rowspan="2" class="th-sort" id="th-grp"><span>区分</span></th>
+                            <th rowspan="2" class="th-sort" id="th-typ"><span>属性</span></th>
+                            <th colspan="4">Lv1　ステータス</th>
+                            <th colspan="4">LvMax　ステータス</th>
+                            <th colspan="4">覚醒LvMax　ステータス</th>
+                            <th colspan="4">特技 (Lv1)</th>
+                        </tr>
+                        <tr>
+                            <th class="th-sort th-hp" id="th-hp1"><span>体力</span></th>
+                            <th class="th-sort th-sp" id="th-sp1"><span>スマイル</span></th>
+                            <th class="th-sort th-pp" id="th-pp1"><span>ピュア</span></th>
+                            <th class="th-sort th-cp" id="th-cp1"><span>クール</span></th>
+                            <th class="th-sort th-hp" id="th-hp2"><span>体力</span></th>
+                            <th class="th-sort th-sp" id="th-sp2"><span>スマイル</span></th>
+                            <th class="th-sort th-pp" id="th-pp2"><span>ピュア</span></th>
+                            <th class="th-sort th-cp" id="th-cp2"><span>クール</span></th>
+                            <th class="th-sort th-hp" id="th-hp3"><span>体力</span></th>
+                            <th class="th-sort th-sp" id="th-sp3"><span>スマイル</span></th>
+                            <th class="th-sort th-pp" id="th-pp3"><span>ピュア</span></th>
+                            <th class="th-sort th-cp" id="th-cp3"><span>クール</span></th>
+                            <th class="th-sort" id="th-skt"><span>種類</span></th>
+                            <th class="th-sort" id="th-skc"><span>条件</span></th>
+                            <th class="th-sort" id="th-skp"><span>確率</span></th>
+                            <th class="th-sort" id="th-ske"><span>効果</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <button id="btn-sv" type="button" class="btn btn-primary btn-unavilable">保存目前記錄</button>
+            <button id="btn-rm" type="button" class="btn btn-primary btn-unavilable">刪除已存記錄</button>
+            <button id="btn-gen" type="button" class="btn btn-success btn-unavilable">產生網址</button>
+            <p><span id="span-msg"></span></p>
+        </div>
+        <div class="panel-footer">
+            <p>Page created by: peer4321@ptt</p>
+        </div>
+    </div>
+</body>
+
+</html>

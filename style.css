@@ -1,0 +1,80 @@
+
+
+div.table-responsive {
+    height: 80vh;
+    overflow-y: auto;
+}
+
+div.panel a {
+    display: block;
+}
+
+.btn-unavilable {
+    display: none;
+}
+
+div.dropdown button.btn-link {
+    padding: 3px 20px;
+    text-align: left;
+}
+
+button.btn-link.filter-disable {
+    text-decoration: line-through;
+    color: #333;
+}
+
+#table-cards th, #table-cards td{
+    text-align: center;
+    vertical-align: middle;
+}
+
+#table-cards button {
+    padding: 0px 0px;
+    white-space: normal;
+}
+
+.th-sort button {
+    font-weight: bold;
+}
+
+.td-img img {
+    height: 64px;
+    width: auto;
+}
+
+.th-hp button {
+    color: #E50;
+}
+
+.th-sp button, .tr-smile .td-typ {
+    color: #E69;
+}
+
+.th-pp button, .tr-pure .td-typ {
+    color: #0C3;
+}
+
+.th-cp button, .tr-cool .td-typ {
+    color: #09E;
+}
+
+.tr-smile .td-sp, .tr-pure .td-pp, .tr-cool .td-cp {
+    font-weight: bold;
+}
+
+.table tbody>tr:nth-child(odd)>td.selected{
+	border: 1px solid white;
+    background-color: #E0E0F0;
+}
+.table tbody>tr:nth-child(even)>td.selected{
+	border: 1px solid white;
+    background-color: #D8D8E8;
+}
+
+footer { 
+    color: #A0A0A0;
+}
+
+.div-inline {
+    display: inline-block;
+}
